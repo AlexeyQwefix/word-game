@@ -1,0 +1,24 @@
+.words-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --symbol-gap:0.44vh;
+  gap: var(--symbol-gap);
+  margin-top: 4.27vh;
+  --symbol-size:5.39vh;
+  height: 33.8vh;
+  .word{
+    display: flex;
+    gap: var(--symbol-gap);
+    .symbol{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: var(--symbol-size);
+      width: var(--symbol-size);
+      background-color: white;
+      color: black;
+      border-radius: 1.5vh;
+    }
+  }
+}
