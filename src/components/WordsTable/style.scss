@@ -19,6 +19,7 @@
       background-color: white;
       color: black;
       border-radius: 1.5vh;
+      font-size: calc(var(--symbol-size) * 0.58)
     }
     &.found .symbol{
       background-color: #65BD65;

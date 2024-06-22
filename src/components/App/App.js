@@ -1,19 +1,46 @@
 import Header from "../Header/Header";
 import WordsTable from "../WordsTable/WordsTable";
 import WordsInput from "../WordsInput/WordsInput";
+import NotActualPopup from "../NotActualPopup/NotActualPopup";
 import "./style.scss";
-import level1 from "../../data/levels/1.json";
-import level2 from "../../data/levels/2.json";
-import level3 from "../../data/levels/3.json";
-import { useCallback, useState } from "react";
+import getLevelFromLevelNumber from "../../helpers/getLevelFromLevelNumber";
+import { useCallback, useEffect, useState } from "react";
 import WinScreen from "../WinScreen/WinScreen";
+import LocalSavesHelper from "../../helpers/localSavesHelper";
 
 function App() {
+  const [hash, setHash] = useState(0);
+  const [isWrongHash, setIsWrongHash] = useState(false);
+
   const [currentInput, setCurrentInput] = useState("");
-  const [foundedWords, setFoundedWords] = useState([]);
+  const [foundedWords, setFoundedWords] = useState(
+    LocalSavesHelper.getFoundedWords()
+  );
   const [currentLevel, setCurrentLevel] = useState({
-    ...level1,
-    levelNumber: 1,
+    ...getLevelFromLevelNumber(LocalSavesHelper.getLevel()),
+    levelNumber: LocalSavesHelper.getLevel(),
+  });
+
+  useEffect(() => setHash(LocalSavesHelper.increaseHash()), [setHash]);
+
+  useEffect(() => {
+    const timeoutFunction = () => {
+      if (LocalSavesHelper.getHash() !== hash) setIsWrongHash(true);
+    };
+    const interval = setInterval(timeoutFunction, 500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [hash, setIsWrongHash]);
+
+  const softReload = useCallback(() => {
+    setFoundedWords(LocalSavesHelper.getFoundedWords());
+    setCurrentLevel({
+      ...getLevelFromLevelNumber(LocalSavesHelper.getLevel()),
+      levelNumber: LocalSavesHelper.getLevel(),
+    });
+    setHash(LocalSavesHelper.increaseHash());
+    setIsWrongHash(false)
   });
 
   const addLetter = useCallback(
@@ -30,7 +57,9 @@ function App() {
           return foundedWords;
         if (currentLevel.words.findIndex((w) => w === currentInput) === -1)
           return foundedWords;
-        return [...foundedWords, currentInput];
+        const res = [...foundedWords, currentInput];
+        setHash(LocalSavesHelper.setFoundedWords(res));
+        return res;
       });
       return "";
     });
@@ -38,27 +67,26 @@ function App() {
 
   const startNextLevel = useCallback(() => {
     const nextLevelNumber = currentLevel.levelNumber + 1;
-    const realNextLevelNumber = nextLevelNumber % 3;
-    let nextLevelData = level1;
 
-    switch (realNextLevelNumber) {
-      case 1:
-        nextLevelData = level1;
-        break;
-      case 2:
-        nextLevelData = level2;
-        break;
-      default:
-        nextLevelData = level3;
-        break;
-    }
+    let nextLevelData = getLevelFromLevelNumber(nextLevelNumber);
+    LocalSavesHelper.setLevel(nextLevelNumber);
+    const hash = LocalSavesHelper.setFoundedWords([]);
+    console.log("set here");
+    setHash(hash);
     setCurrentLevel({ ...nextLevelData, levelNumber: nextLevelNumber });
     setFoundedWords([]);
     setCurrentInput("");
-  }, [currentLevel]);
+  }, [
+    currentLevel,
+    setHash,
+    setCurrentLevel,
+    setFoundedWords,
+    setCurrentInput,
+  ]);
 
   return (
     <div className="app">
+      {isWrongHash && <NotActualPopup softReload={softReload}></NotActualPopup>}
       {foundedWords.length === currentLevel.words.length ? (
         <WinScreen
           levelNumber={currentLevel.levelNumber}
