@@ -11,6 +11,7 @@
   .current-input {
     display: flex;
     gap: 0.26vh;
+    height: 3.7vh;
     .symbol {
       width: 3.7vh;
       height: 3.7vh;
@@ -44,6 +45,7 @@
       position: relative;
 
       .symbol-wrapper {
+        pointer-events: none;
         position: absolute;
         bottom: calc(var(--circle-width) * -1 + var(--circle-width) * -1);
         left: 50%;
@@ -52,6 +54,7 @@
         height: calc(var(--circle-size) + var(--circle-width) * 2);
 
         .symbol {
+          pointer-events: all;
           width: var(--symbol-size);
           height: var(--symbol-size);
           border-radius: 50%;
@@ -67,6 +70,12 @@
           position: relative;
           z-index: 2;
           box-shadow: 0 0.44vh 0 0 #a6a8ab;
+
+          &.chosen {
+            background-color: #e96fa4;
+            color: #ffffff;
+            box-shadow: 0 0.44vh 0 0 #af638c;
+          }
         }
       }
     }
