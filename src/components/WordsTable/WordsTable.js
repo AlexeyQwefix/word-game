@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
 
-const SIZE_IN_VH = 33.8;
+const SIZE_IN_VH = 48;
 const GAP = 0.44;
 
 const computeSymbolSize = ({ words }) => {
@@ -11,7 +11,9 @@ const computeSymbolSize = ({ words }) => {
   })[0].length;
 
   const longestDimension = wordsCount > longestWord ? wordsCount : longestWord;
-  return (SIZE_IN_VH - GAP * (longestDimension - 1)) / longestDimension;
+  const res =(SIZE_IN_VH - GAP * (longestDimension - 1)) / longestDimension;
+
+  return res>=5.26?5.26:res
 };
 
 function WordsTable({ level, levelNumber, foundedWords }) {

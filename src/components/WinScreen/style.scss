@@ -1,0 +1,38 @@
+.win-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  &-header,
+  &-sub-header {
+    font-size: 3.26vh;
+    margin: 0;
+    margin-top: 22.62vh;
+    text-align: center;
+  }
+  &-header {
+    font-size: 4.67vh;
+    margin-top: 0.79vh;
+  }
+  &-next-level-button {
+    transition: 0.3s;
+    margin-top: 30.9vh;
+    height: 7.92vh;
+    border-radius: 3.96vh;
+    font-size: 40px;
+    min-width: 29vh;
+    font-weight: 700;
+    background-color: #65bd65;
+    box-shadow: 0 0.44vh 0 0 #508853;
+    border: none;
+    color: white;
+    cursor: pointer;
+    &:hover {
+      background-color: #65bd65ac;
+    }
+    &:active {
+      color: #65bd65;
+      background-color: white;
+    }
+  }
+}
