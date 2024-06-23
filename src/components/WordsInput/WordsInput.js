@@ -37,10 +37,36 @@ function WordsInput({ level, currentInput, addLetter, endWord }) {
   };
 
   const endInput = () => {
-    if (!isMouseDown) return;
     setIsMouseDown(false);
     setHighlightedIndexes([]);
     endWord();
+  };
+
+  const allTheRefs = [];
+
+  const handleMobileDrag = (e) => {
+    const { clientX, clientY } = e.changedTouches[0];
+    const target = allTheRefs.find(({ ref, index, letter }) => {
+      const rect = ref.getBoundingClientRect();
+
+      if (
+        clientY < rect.bottom &&
+        clientY > rect.top &&
+        clientX > rect.left &&
+        clientX < rect.right
+      )
+        return true;
+      return false;
+    });
+    if (!target) return;
+
+    setHighlightedIndexes((indexes) => {
+      if (indexes.findIndex((i) => i === target.index) === -1) {
+        addLetter(target.letter);
+        return [...indexes, target.index];
+      }
+      return indexes;
+    });
   };
 
   return (
@@ -59,6 +85,8 @@ function WordsInput({ level, currentInput, addLetter, endWord }) {
               className="symbol-wrapper"
               key={`${letter.symbol}-${letter.turnDegrees}`}
               style={{ "--turn-degrees": letter.turnDegrees + "deg" }}
+              onTouchMove={handleMobileDrag}
+              onTouchEnd={endInput}
             >
               <div
                 className={`symbol ${
@@ -68,6 +96,9 @@ function WordsInput({ level, currentInput, addLetter, endWord }) {
                 }`}
                 onMouseEnter={() => hoverLetter(letter.symbol, index)}
                 onMouseDown={() => startInput(letter.symbol, index)}
+                ref={(ref) =>
+                  (allTheRefs[index] = { ref, index, letter: letter.symbol })
+                }
               >
                 {letter.symbol}
               </div>

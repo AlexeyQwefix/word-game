@@ -41,7 +41,7 @@ function App() {
     });
     setHash(LocalSavesHelper.increaseHash());
     setIsWrongHash(false)
-  });
+  },[setFoundedWords,setCurrentLevel,setHash,setIsWrongHash]);
 
   const addLetter = useCallback(
     (inputLetter) => {
@@ -71,7 +71,6 @@ function App() {
     let nextLevelData = getLevelFromLevelNumber(nextLevelNumber);
     LocalSavesHelper.setLevel(nextLevelNumber);
     const hash = LocalSavesHelper.setFoundedWords([]);
-    console.log("set here");
     setHash(hash);
     setCurrentLevel({ ...nextLevelData, levelNumber: nextLevelNumber });
     setFoundedWords([]);
@@ -85,7 +84,7 @@ function App() {
   ]);
 
   return (
-    <div className="app">
+    <div className="app" >
       {isWrongHash && <NotActualPopup softReload={softReload}></NotActualPopup>}
       {foundedWords.length === currentLevel.words.length ? (
         <WinScreen

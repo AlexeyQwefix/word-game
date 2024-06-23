@@ -18,7 +18,6 @@ const LocalSavesHelper = {
   },
 
   setFoundedWords(words) {
-    console.log("here");
     localStorage.setItem(FOUND_WORDS, JSON.stringify(words));
     return this.increaseHash();
   },
